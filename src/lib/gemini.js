@@ -8,6 +8,8 @@ function getAI() {
   // Try VITE_ prefix (Vercel/Netlify) first, then fallback to standard (AI Studio)
   const apiKey = import.meta.env.VITE_GEMINI_API_KEY || process.env.GEMINI_API_KEY || "";
   
+  console.log("Debug: VITE_GEMINI_API_KEY is", import.meta.env.VITE_GEMINI_API_KEY ? "defined" : "undefined");
+  
   if (!apiKey || apiKey === "MY_GEMINI_API_KEY") {
     throw new Error("Gemini API key is missing. Please set VITE_GEMINI_API_KEY in your environment variables.");
   }
