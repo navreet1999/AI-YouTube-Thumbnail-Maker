@@ -1,6 +1,7 @@
 import { GoogleGenAI } from "@google/genai";
 
-const apiKey = import.meta.env.VITE_GEMINI_API_KEY || (typeof process !== 'undefined' ? process.env.GEMINI_API_KEY : "");
+// Try VITE_ prefix (Vercel/Netlify) first, then fallback to standard (AI Studio)
+const apiKey = import.meta.env.VITE_GEMINI_API_KEY || process.env.GEMINI_API_KEY || "";
 const ai = new GoogleGenAI({ apiKey });
 
 export async function generateThumbnailPrompt(title, hasImage) {

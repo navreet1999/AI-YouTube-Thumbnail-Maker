@@ -10,15 +10,16 @@ import {
   Image as ImageIcon, 
   Sparkles, 
   Download, 
-  RefreshCw, 
+  Zap, 
   Type, 
-  Layout,
+  Loader2,
   History,
   Trash2,
   AlertCircle
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -176,34 +177,60 @@ export default function App() {
 
       <div className="main-container">
         {/* Header */}
-        <header className="header-section">
-          <div className="space-y-2">
-            <div className="header-logo-group">
-              <div className="header-logo-icon">
-                <Layout className="w-6 h-6 text-white" />
+        <header className="sticky top-0 z-50 w-full backdrop-blur-md border-b border-[#D4AF37]/10 py-4 mb-12">
+          <div className="max-w-7xl mx-auto px-4 flex items-center justify-between">
+            <motion.div 
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="header-logo-group"
+            >
+              <img 
+                src="/logo.png" 
+                alt="Navreet Kaur Logo" 
+                className="header-logo-img"
+                onError={(e) => {
+                  e.target.style.display = 'none';
+                  e.target.nextSibling.style.display = 'flex';
+                }}
+              />
+              <div className="hidden items-center gap-2">
+                <div className="p-2 bg-gradient-to-br from-[#D4AF37] to-[#B8860B] rounded-lg shadow-lg shadow-[#D4AF37]/20">
+                  <Sparkles className="w-6 h-6 text-black" />
+                </div>
+                <h1 className="header-title text-2xl">Navreet Kaur</h1>
               </div>
-              <h1 className="header-title">AI Thumbnail Maker</h1>
-            </div>
-            <p className="header-subtitle">
-              Create high-CTR YouTube thumbnails in seconds using advanced AI.
-            </p>
-          </div>
-          <div className="flex items-center gap-4">
-            <Badge variant="outline" className="px-3 py-1 border-zinc-800 text-zinc-400 bg-zinc-900/50">
-              <Sparkles className="w-3 h-3 mr-1 text-orange-500" />
-              Powered by Gemini 2.5
-            </Badge>
+              <div className="hidden md:block ml-6 border-l border-zinc-800 pl-6">
+                <h1 className="header-title text-2xl">AI Thumbnail Maker</h1>
+                <p className="text-[10px] uppercase tracking-[0.3em] text-[#D4AF37]/60 font-bold">Premium Visual Studio</p>
+              </div>
+            </motion.div>
+            
+            <motion.div 
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="flex items-center gap-4"
+            >
+              <Badge variant="outline" className="px-4 py-1.5 border-[#D4AF37]/30 text-[#D4AF37] bg-[#D4AF37]/5 backdrop-blur-md font-bold tracking-widest text-[10px] uppercase">
+                <Zap className="w-3 h-3 mr-2 fill-current" />
+                Elite Access
+              </Badge>
+            </motion.div>
           </div>
         </header>
 
         <main className="main-grid">
           {/* Left Column: Controls */}
-          <div className="controls-column">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="controls-column"
+          >
             <Card className="custom-card">
               <CardHeader>
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <Type className="w-4 h-4 text-orange-500" />
-                  Video Details
+                <CardTitle className="text-xl font-black font-heading flex items-center gap-2">
+                  <Zap className="w-5 h-5 text-[#D4AF37] fill-[#D4AF37]/20" />
+                  Premium Configuration
                 </CardTitle>
                 <CardDescription className="text-zinc-500">
                   Enter your video title and optional headshot.
@@ -211,18 +238,19 @@ export default function App() {
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="space-y-2">
-                  <Label htmlFor="title" className="text-zinc-300">Video Title</Label>
-                  <Input
+                  <Label htmlFor="title" className="text-zinc-400 font-medium">Video Title</Label>
+                  <Textarea
                     id="title"
-                    placeholder="e.g. How I Made $10,000 in 30 Days"
+                    placeholder="Enter your compelling video title..."
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
-                    className="bg-zinc-950 border-zinc-800 focus:ring-orange-500/50 transition-all"
+                    rows={4}
+                    className="resize-none bg-zinc-950/50 border-zinc-800 focus:border-[#D4AF37]/50 focus:ring-[#D4AF37]/20 transition-all text-white placeholder:text-zinc-600"
                   />
                 </div>
 
-                <div className="space-y-2">
-                  <Label className="text-zinc-300">Headshot Photo (Optional)</Label>
+                <div className="space-y-4">
+                  <Label className="text-zinc-400 font-medium">Your Headshot (Optional)</Label>
                   <div 
                     onClick={() => fileInputRef.current?.click()}
                     className={cn(
@@ -230,44 +258,36 @@ export default function App() {
                       image ? "upload-zone-active" : "upload-zone-empty"
                     )}
                   >
+                    <input 
+                      type="file" 
+                      ref={fileInputRef}
+                      onChange={handleImageUpload}
+                      accept="image/*"
+                      className="hidden"
+                    />
+                    
                     {image ? (
-                      <>
+                      <div className="relative w-full h-full flex items-center justify-center">
                         <img 
                           src={image} 
-                          alt="Headshot" 
-                          className="w-full h-32 object-cover rounded-lg shadow-2xl"
+                          alt="Preview" 
+                          className="max-h-[180px] rounded-lg shadow-2xl border border-zinc-800"
                         />
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
-                          className="absolute top-2 right-2 bg-black/50 hover:bg-black/80 text-white rounded-full p-1 h-8 w-8"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setImage(null);
-                          }}
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
-                        <p className="text-xs text-zinc-400">Click to change photo</p>
-                      </>
+                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-lg">
+                          <p className="text-white text-sm font-bold">Change Photo</p>
+                        </div>
+                      </div>
                     ) : (
                       <>
                         <div className="upload-icon-wrapper">
-                          <Upload className="w-6 h-6 text-zinc-400" />
+                          <Upload className="w-6 h-6 text-[#D4AF37]" />
                         </div>
                         <div className="text-center">
-                          <p className="text-sm font-medium text-zinc-300">Upload Headshot</p>
+                          <p className="text-sm font-bold text-white">Upload Headshot</p>
                           <p className="text-xs text-zinc-500 mt-1">PNG, JPG up to 5MB</p>
                         </div>
                       </>
                     )}
-                    <input 
-                      type="file" 
-                      ref={fileInputRef} 
-                      onChange={handleImageUpload} 
-                      className="hidden" 
-                      accept="image/*"
-                    />
                   </div>
                 </div>
 
@@ -278,13 +298,13 @@ export default function App() {
                 >
                   {isGenerating ? (
                     <>
-                      <RefreshCw className="w-5 h-5 mr-2 animate-spin" />
-                      Generating Magic...
+                      <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                      Crafting Masterpiece...
                     </>
                   ) : (
                     <>
-                      <Sparkles className="w-5 h-5 mr-2" />
-                      Generate Thumbnail
+                      <Zap className="w-5 h-5 mr-2 fill-current" />
+                      Generate Premium Thumbnail
                     </>
                   )}
                 </Button>
@@ -318,10 +338,15 @@ export default function App() {
                 </div>
               </CardContent>
             </Card>
-          </div>
+          </motion.div>
 
           {/* Right Column: Preview & Results */}
-          <div className="preview-column">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            className="preview-column"
+          >
             {/* Main Preview */}
             <div className="main-preview-container group">
               <AnimatePresence mode="wait">
@@ -403,23 +428,25 @@ export default function App() {
             </div>
 
             {/* History */}
-            <div className="space-y-4">
+            <div className="space-y-6">
               <div className="history-section-header">
-                <h2 className="text-xl font-bold flex items-center gap-2">
-                  <History className="w-5 h-5 text-zinc-500" />
-                  Recent Generations
-                </h2>
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-[#D4AF37]/10 rounded-lg">
+                    <History className="w-5 h-5 text-[#D4AF37]" />
+                  </div>
+                  <h2 className="text-xl font-black text-white uppercase tracking-widest text-sm font-heading">Creation Vault</h2>
+                </div>
                 {history.length > 0 && (
                   <Button 
                     variant="ghost" 
                     size="sm" 
-                    className="text-zinc-500 hover:text-white"
+                    className="text-zinc-500 hover:text-[#D4AF37] transition-colors text-xs uppercase tracking-tighter"
                     onClick={() => {
                       setHistory([]);
                       localStorage.removeItem("thumbnail_history");
                     }}
                   >
-                    Clear All
+                    Purge All
                   </Button>
                 )}
               </div>
@@ -481,16 +508,19 @@ export default function App() {
                 </div>
               )}
             </div>
-          </div>
+          </motion.div>
         </main>
 
         {/* Footer */}
-        <footer className="footer-layout">
-          <p>© 2026 AI Thumbnail Maker. All rights reserved.</p>
-          <div className="flex items-center gap-6">
-            <a href="#" className="hover:text-white transition-colors">Terms</a>
-            <a href="#" className="hover:text-white transition-colors">Privacy</a>
-            <a href="#" className="hover:text-white transition-colors">Support</a>
+        <footer className="footer-layout border-zinc-800/30">
+          <div className="flex items-center gap-2 text-[#D4AF37]/60">
+            <Sparkles className="w-4 h-4" />
+            <p>© 2026 Navreet Kaur. Premium AI Design.</p>
+          </div>
+          <div className="flex items-center gap-8">
+            <a href="#" className="hover:text-[#D4AF37] transition-colors uppercase tracking-widest text-[10px]">Terms of Service</a>
+            <a href="#" className="hover:text-[#D4AF37] transition-colors uppercase tracking-widest text-[10px]">Privacy Policy</a>
+            <a href="#" className="hover:text-[#D4AF37] transition-colors uppercase tracking-widest text-[10px]">Concierge Support</a>
           </div>
         </footer>
       </div>

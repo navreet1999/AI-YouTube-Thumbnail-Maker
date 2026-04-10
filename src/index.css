@@ -2,11 +2,12 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 @import "@fontsource-variable/geist";
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&display=swap');
 
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-    --font-heading: var(--font-sans);
+    --font-heading: 'Playfair Display', serif;
     --font-sans: 'Geist Variable', sans-serif;
     --color-sidebar-ring: var(--sidebar-ring);
     --color-sidebar-border: var(--sidebar-border);
@@ -135,7 +136,7 @@
 /* Semantic CSS Classes for AI Thumbnail Maker */
 
 .app-shell {
-  @apply min-h-screen bg-[#050505] text-white font-sans selection:bg-orange-500/30;
+  @apply min-h-screen bg-[#050505] text-white font-sans selection:bg-[#D4AF37]/30;
 }
 
 .glow-background {
@@ -143,35 +144,35 @@
 }
 
 .glow-top-left {
-  @apply absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-orange-600/10 blur-[120px] rounded-full;
+  @apply absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-[#D4AF37]/10 blur-[150px] rounded-full;
 }
 
 .glow-bottom-right {
-  @apply absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-600/10 blur-[120px] rounded-full;
+  @apply absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-zinc-800/20 blur-[150px] rounded-full;
 }
 
 .main-container {
-  @apply relative z-10 max-w-7xl mx-auto px-4 py-8 md:py-12;
+  @apply relative z-10 max-w-7xl mx-auto px-4 py-8 md:py-16;
 }
 
 .header-section {
-  @apply flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12;
+  @apply flex flex-col md:flex-row md:items-center justify-between gap-8 mb-16;
 }
 
 .header-logo-group {
-  @apply flex items-center gap-2;
+  @apply flex items-center gap-4;
 }
 
-.header-logo-icon {
-  @apply p-2 bg-orange-600 rounded-lg;
+.header-logo-img {
+  @apply h-16 w-auto object-contain;
 }
 
 .header-title {
-  @apply text-3xl font-bold tracking-tight;
+  @apply text-4xl font-black tracking-tight font-heading bg-clip-text text-transparent bg-gradient-to-r from-[#D4AF37] via-[#F9E498] to-[#D4AF37];
 }
 
 .header-subtitle {
-  @apply text-zinc-400 max-w-md;
+  @apply text-zinc-500 max-w-md text-lg;
 }
 
 .main-grid {
@@ -187,51 +188,51 @@
 }
 
 .custom-card {
-  @apply bg-zinc-900/50 border-zinc-800 backdrop-blur-xl;
+  @apply bg-zinc-900/40 border-zinc-800/50 backdrop-blur-2xl shadow-2xl;
 }
 
 .upload-zone {
-  @apply relative border-2 border-dashed rounded-xl p-4 transition-all cursor-pointer flex flex-col items-center justify-center gap-3 min-h-[160px];
+  @apply relative border-2 border-dashed rounded-2xl p-6 transition-all cursor-pointer flex flex-col items-center justify-center gap-4 min-h-[200px];
 }
 
 .upload-zone-empty {
-  @apply border-zinc-800 hover:border-zinc-700 hover:bg-zinc-800/30;
+  @apply border-zinc-800 hover:border-[#D4AF37]/50 hover:bg-[#D4AF37]/5;
 }
 
 .upload-zone-active {
-  @apply border-orange-500/50 bg-orange-500/5;
+  @apply border-[#D4AF37]/50 bg-[#D4AF37]/5;
 }
 
 .upload-icon-wrapper {
-  @apply p-3 bg-zinc-800 rounded-full group-hover:scale-110 transition-transform;
+  @apply p-4 bg-zinc-800/50 rounded-full group-hover:scale-110 group-hover:bg-[#D4AF37]/20 transition-all;
 }
 
 .generate-button {
-  @apply w-full bg-orange-600 hover:bg-orange-500 text-white font-bold h-12 rounded-xl transition-all shadow-lg shadow-orange-600/20;
+  @apply w-full bg-gradient-to-r from-[#D4AF37] to-[#B8860B] hover:from-[#F9E498] hover:to-[#D4AF37] text-black font-extrabold h-14 rounded-2xl transition-all shadow-xl shadow-[#D4AF37]/20 uppercase tracking-widest text-sm;
 }
 
 .main-preview-container {
-  @apply relative aspect-video w-full bg-zinc-900 rounded-2xl overflow-hidden border border-zinc-800 shadow-2xl;
+  @apply relative aspect-video w-full bg-zinc-950 rounded-3xl overflow-hidden border border-zinc-800/50 shadow-[0_0_60px_-15px_rgba(212,175,55,0.25)];
 }
 
 .preview-overlay {
-  @apply absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4;
+  @apply absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-6 backdrop-blur-sm;
 }
 
 .history-section-header {
-  @apply flex items-center justify-between mb-4;
+  @apply flex items-center justify-between mb-6;
 }
 
 .history-grid {
-  @apply grid grid-cols-2 md:grid-cols-3 gap-4;
+  @apply grid grid-cols-2 md:grid-cols-3 gap-6;
 }
 
 .history-item-card {
-  @apply relative aspect-video rounded-xl overflow-hidden border border-zinc-800 bg-zinc-900;
+  @apply relative aspect-video rounded-2xl overflow-hidden border border-zinc-800 bg-zinc-900 transition-all hover:border-[#D4AF37]/50 hover:shadow-[0_0_30px_-10px_rgba(212,175,55,0.3)];
 }
 
 .history-item-overlay {
-  @apply absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity p-3 flex flex-col justify-between;
+  @apply absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-4 flex flex-col justify-between backdrop-blur-[2px];
 }
 
 .footer-layout {
