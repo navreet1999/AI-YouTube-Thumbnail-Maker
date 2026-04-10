@@ -1,10 +1,23 @@
 import { GoogleGenAI } from "@google/genai";
 
-// Try VITE_ prefix (Vercel/Netlify) first, then fallback to standard (AI Studio)
-const apiKey = import.meta.env.VITE_GEMINI_API_KEY || process.env.GEMINI_API_KEY || "";
-const ai = new GoogleGenAI({ apiKey });
+let aiInstance = null;
+
+function getAI() {
+  if (aiInstance) return aiInstance;
+
+  // Try VITE_ prefix (Vercel/Netlify) first, then fallback to standard (AI Studio)
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY || process.env.GEMINI_API_KEY || "";
+  
+  if (!apiKey || apiKey === "MY_GEMINI_API_KEY") {
+    throw new Error("Gemini API key is missing. Please set VITE_GEMINI_API_KEY in your environment variables.");
+  }
+
+  aiInstance = new GoogleGenAI({ apiKey });
+  return aiInstance;
+}
 
 export async function generateThumbnailPrompt(title, hasImage) {
+  const ai = getAI();
   const response = await ai.models.generateContent({
     model: "gemini-3-flash-preview",
     contents: `You are an expert YouTube thumbnail designer. 
@@ -25,6 +38,7 @@ export async function generateThumbnailPrompt(title, hasImage) {
 }
 
 export async function generateThumbnailImage(prompt, base64Image) {
+  const ai = getAI();
   const contents = {
     parts: [
       { text: prompt }
