@@ -167,24 +167,24 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#050505] text-white font-sans selection:bg-orange-500/30">
+    <div className="app-shell">
       {/* Background Glows */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-orange-600/10 blur-[120px] rounded-full" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-600/10 blur-[120px] rounded-full" />
+      <div className="glow-background">
+        <div className="glow-top-left" />
+        <div className="glow-bottom-right" />
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 py-8 md:py-12">
+      <div className="main-container">
         {/* Header */}
-        <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
+        <header className="header-section">
           <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <div className="p-2 bg-orange-600 rounded-lg">
+            <div className="header-logo-group">
+              <div className="header-logo-icon">
                 <Layout className="w-6 h-6 text-white" />
               </div>
-              <h1 className="text-3xl font-bold tracking-tight">AI Thumbnail Maker</h1>
+              <h1 className="header-title">AI Thumbnail Maker</h1>
             </div>
-            <p className="text-zinc-400 max-w-md">
+            <p className="header-subtitle">
               Create high-CTR YouTube thumbnails in seconds using advanced AI.
             </p>
           </div>
@@ -196,10 +196,10 @@ export default function App() {
           </div>
         </header>
 
-        <main className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <main className="main-grid">
           {/* Left Column: Controls */}
-          <div className="lg:col-span-4 space-y-6">
-            <Card className="bg-zinc-900/50 border-zinc-800 backdrop-blur-xl">
+          <div className="controls-column">
+            <Card className="custom-card">
               <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2">
                   <Type className="w-4 h-4 text-orange-500" />
@@ -226,10 +226,8 @@ export default function App() {
                   <div 
                     onClick={() => fileInputRef.current?.click()}
                     className={cn(
-                      "group relative border-2 border-dashed rounded-xl p-4 transition-all cursor-pointer flex flex-col items-center justify-center gap-3 min-h-[160px]",
-                      image 
-                        ? "border-orange-500/50 bg-orange-500/5" 
-                        : "border-zinc-800 hover:border-zinc-700 hover:bg-zinc-800/30"
+                      "upload-zone group",
+                      image ? "upload-zone-active" : "upload-zone-empty"
                     )}
                   >
                     {image ? (
@@ -254,7 +252,7 @@ export default function App() {
                       </>
                     ) : (
                       <>
-                        <div className="p-3 bg-zinc-800 rounded-full group-hover:scale-110 transition-transform">
+                        <div className="upload-icon-wrapper">
                           <Upload className="w-6 h-6 text-zinc-400" />
                         </div>
                         <div className="text-center">
@@ -276,7 +274,7 @@ export default function App() {
                 <Button 
                   onClick={handleGenerate} 
                   disabled={isGenerating || !title}
-                  className="w-full bg-orange-600 hover:bg-orange-500 text-white font-bold h-12 rounded-xl transition-all shadow-lg shadow-orange-600/20"
+                  className="generate-button"
                 >
                   {isGenerating ? (
                     <>
@@ -323,9 +321,9 @@ export default function App() {
           </div>
 
           {/* Right Column: Preview & Results */}
-          <div className="lg:col-span-8 space-y-8">
+          <div className="preview-column">
             {/* Main Preview */}
-            <div className="relative aspect-video w-full bg-zinc-900 rounded-2xl overflow-hidden border border-zinc-800 shadow-2xl group">
+            <div className="main-preview-container group">
               <AnimatePresence mode="wait">
                 {generatedUrl ? (
                   <motion.div 
@@ -340,7 +338,7 @@ export default function App() {
                       alt="Generated Thumbnail" 
                       className="w-full h-full object-cover"
                     />
-                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4">
+                    <div className="preview-overlay">
                       <Button 
                         onClick={() => downloadImage(generatedUrl, title)}
                         className="bg-white text-black hover:bg-zinc-200"
@@ -406,7 +404,7 @@ export default function App() {
 
             {/* History */}
             <div className="space-y-4">
-              <div className="flex items-center justify-between">
+              <div className="history-section-header">
                 <h2 className="text-xl font-bold flex items-center gap-2">
                   <History className="w-5 h-5 text-zinc-500" />
                   Recent Generations
@@ -427,21 +425,21 @@ export default function App() {
               </div>
               
               {history.length > 0 ? (
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                <div className="history-grid">
                   {history.map((item) => (
                     <motion.div 
                       layout
                       key={item.id}
                       initial={{ opacity: 0, scale: 0.9 }}
                       animate={{ opacity: 1, scale: 1 }}
-                      className="group relative aspect-video rounded-xl overflow-hidden border border-zinc-800 bg-zinc-900"
+                      className="history-item-card group"
                     >
                       <img 
                         src={item.url} 
                         alt={item.title} 
                         className="w-full h-full object-cover transition-transform group-hover:scale-105"
                       />
-                      <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity p-3 flex flex-col justify-between">
+                      <div className="history-item-overlay">
                         <div className="flex justify-end">
                           <Button 
                             variant="ghost" 
@@ -487,7 +485,7 @@ export default function App() {
         </main>
 
         {/* Footer */}
-        <footer className="mt-20 py-8 border-t border-zinc-900 flex flex-col md:flex-row items-center justify-between gap-4 text-zinc-500 text-sm">
+        <footer className="footer-layout">
           <p>© 2026 AI Thumbnail Maker. All rights reserved.</p>
           <div className="flex items-center gap-6">
             <a href="#" className="hover:text-white transition-colors">Terms</a>
