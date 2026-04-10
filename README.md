@@ -4,7 +4,24 @@ Professional YouTube thumbnail generator powered by Google Gemini AI.
 
 ## 🚀 Deployment
 
-This app is ready to be deployed to **Google Cloud Run** directly from AI Studio:
+### Option 1: Vercel (Recommended for Free Hosting)
+1. Export your project to **GitHub** (see instructions below).
+2. Go to [Vercel.com](https://vercel.com) and sign in with GitHub.
+3. Click **Add New** > **Project**.
+4. Import your thumbnail maker repository.
+5. In the **Environment Variables** section, add:
+   - `GEMINI_API_KEY`: Your Google AI API Key.
+6. Click **Deploy**. Vercel will give you a free `your-app.vercel.app` domain.
+
+### Option 2: Netlify
+1. Export your project to **GitHub**.
+2. Go to [Netlify.com](https://netlify.com) and sign in.
+3. Click **Add new site** > **Import an existing project**.
+4. Connect to GitHub and select your repository.
+5. Add your `GEMINI_API_KEY` in the Site Configuration > Environment Variables.
+6. Click **Deploy site**. You will get a free `your-app.netlify.app` domain.
+
+### Option 3: Google Cloud Run (Direct from AI Studio)
 1. Click the **Share** button in the top right corner of AI Studio.
 2. Follow the prompts to deploy to Cloud Run.
 3. Once deployed, anyone with the URL can use the app.
