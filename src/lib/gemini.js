@@ -1,6 +1,7 @@
 import { GoogleGenAI } from "@google/genai";
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || "" });
+const apiKey = import.meta.env.VITE_GEMINI_API_KEY || (typeof process !== 'undefined' ? process.env.GEMINI_API_KEY : "");
+const ai = new GoogleGenAI({ apiKey });
 
 export async function generateThumbnailPrompt(title, hasImage) {
   const response = await ai.models.generateContent({

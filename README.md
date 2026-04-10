@@ -10,7 +10,7 @@ Professional YouTube thumbnail generator powered by Google Gemini AI.
 3. Click **Add New** > **Project**.
 4. Import your thumbnail maker repository.
 5. In the **Environment Variables** section, add:
-   - `GEMINI_API_KEY`: Your Google AI API Key.
+   - `VITE_GEMINI_API_KEY`: Your Google AI API Key.
 6. Click **Deploy**. Vercel will give you a free `your-app.vercel.app` domain.
 
 ### Option 2: Netlify
@@ -18,7 +18,7 @@ Professional YouTube thumbnail generator powered by Google Gemini AI.
 2. Go to [Netlify.com](https://netlify.com) and sign in.
 3. Click **Add new site** > **Import an existing project**.
 4. Connect to GitHub and select your repository.
-5. Add your `GEMINI_API_KEY` in the Site Configuration > Environment Variables.
+5. Add your `VITE_GEMINI_API_KEY` in the Site Configuration > Environment Variables.
 6. Click **Deploy site**. You will get a free `your-app.netlify.app` domain.
 
 ### Option 3: Google Cloud Run (Direct from AI Studio)
