@@ -2,7 +2,7 @@ import { GoogleGenAI } from "@google/genai";
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || "" });
 
-export async function generateThumbnailPrompt(title: string, hasImage: boolean) {
+export async function generateThumbnailPrompt(title, hasImage) {
   const response = await ai.models.generateContent({
     model: "gemini-3-flash-preview",
     contents: `You are an expert YouTube thumbnail designer. 
@@ -22,23 +22,29 @@ export async function generateThumbnailPrompt(title: string, hasImage: boolean) 
   return response.text || `A professional YouTube thumbnail for a video titled "${title}", high contrast, vibrant colors, cinematic lighting.`;
 }
 
-export async function generateThumbnailImage(prompt: string, base64Image?: string) {
-  const contents: any = {
+export async function generateThumbnailImage(prompt, base64Image) {
+  const contents = {
     parts: [
       { text: prompt }
     ]
   };
 
   if (base64Image) {
-    // Extract base64 data and mime type
-    const matches = base64Image.match(/^data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+);base64,(.+)$/);
-    if (matches) {
-      contents.parts.push({
-        inlineData: {
-          mimeType: matches[1],
-          data: matches[2]
-        }
-      });
+    try {
+      // More robust parsing of data URL
+      const [header, data] = base64Image.split(';base64,');
+      const mimeType = header.split(':')[1];
+      
+      if (mimeType && data) {
+        contents.parts.push({
+          inlineData: {
+            mimeType: mimeType,
+            data: data
+          }
+        });
+      }
+    } catch (e) {
+      console.error("Failed to parse base64 image", e);
     }
   }
 

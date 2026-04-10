@@ -13,7 +13,6 @@ import {
   RefreshCw, 
   Type, 
   Layout,
-  ChevronRight,
   History,
   Trash2,
   AlertCircle
@@ -23,25 +22,17 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 import { generateThumbnailPrompt, generateThumbnailImage } from "@/lib/gemini";
 import { cn } from "@/lib/utils";
 
-interface Thumbnail {
-  id: string;
-  url: string;
-  title: string;
-  timestamp: number;
-}
-
 export default function App() {
   const [title, setTitle] = useState("");
-  const [image, setImage] = useState<string | null>(null);
+  const [image, setImage] = useState(null);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [generatedUrl, setGeneratedUrl] = useState<string | null>(null);
-  const [history, setHistory] = useState<Thumbnail[]>([]);
-  const [error, setError] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [generatedUrl, setGeneratedUrl] = useState(null);
+  const [history, setHistory] = useState([]);
+  const [error, setError] = useState(null);
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     const savedHistory = localStorage.getItem("thumbnail_history");
@@ -54,27 +45,88 @@ export default function App() {
     }
   }, []);
 
-  const saveToHistory = (url: string, title: string) => {
-    const newThumbnail: Thumbnail = {
+  const saveToHistory = (url, title) => {
+    const newThumbnail = {
       id: Date.now().toString(),
       url,
       title,
       timestamp: Date.now(),
     };
-    const newHistory = [newThumbnail, ...history].slice(0, 10);
-    setHistory(newHistory);
-    localStorage.setItem("thumbnail_history", JSON.stringify(newHistory));
+    
+    // Limit history to 6 items to save space
+    let newHistory = [newThumbnail, ...history].slice(0, 6);
+    
+    const trySave = (data) => {
+      try {
+        localStorage.setItem("thumbnail_history", JSON.stringify(data));
+        setHistory(data);
+        return true;
+      } catch (e) {
+        if (e instanceof DOMException && e.name === "QuotaExceededError") {
+          return false;
+        }
+        throw e;
+      }
+    };
+
+    // If saving fails, remove the oldest item and try again
+    while (newHistory.length > 0 && !trySave(newHistory)) {
+      newHistory.pop();
+    }
+    
+    if (newHistory.length === 0) {
+      console.warn("Could not save to history: Item too large for localStorage quota.");
+      // We still update the state so the user sees it in the current session
+      setHistory([newThumbnail]);
+    }
   };
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = (e) => {
     const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImage(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+    if (!file) return;
+
+    // Clear previous errors
+    setError(null);
+
+    // Validate file size (5MB limit)
+    if (file.size > 5 * 1024 * 1024) {
+      setError("Image size must be less than 5MB");
+      e.target.value = "";
+      return;
     }
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      setError("Please upload a valid image file (PNG, JPG, etc.)");
+      e.target.value = "";
+      return;
+    }
+
+    const reader = new FileReader();
+    
+    reader.onload = (event) => {
+      const result = event.target?.result;
+      if (typeof result === 'string') {
+        setImage(result);
+        setError(null);
+      } else {
+        setError("Failed to process image data. Please try another file.");
+      }
+    };
+
+    reader.onerror = () => {
+      setError("Error reading file. The file might be corrupted or inaccessible.");
+    };
+
+    try {
+      reader.readAsDataURL(file);
+    } catch (err) {
+      console.error("Read attempt failed:", err);
+      setError("Could not start reading the file. Please try again.");
+    }
+
+    // Reset input value so the same file can be selected again
+    e.target.value = "";
   };
 
   const handleGenerate = async () => {
@@ -91,7 +143,7 @@ export default function App() {
       const url = await generateThumbnailImage(prompt, image || undefined);
       setGeneratedUrl(url);
       saveToHistory(url, title);
-    } catch (err: any) {
+    } catch (err) {
       console.error(err);
       setError(err.message || "Failed to generate thumbnail. Please try again.");
     } finally {
@@ -99,7 +151,7 @@ export default function App() {
     }
   };
 
-  const downloadImage = (url: string, fileName: string) => {
+  const downloadImage = (url, fileName) => {
     const link = document.createElement("a");
     link.href = url;
     link.download = `${fileName.replace(/\s+/g, "_")}_thumbnail.png`;
@@ -108,7 +160,7 @@ export default function App() {
     document.body.removeChild(link);
   };
 
-  const deleteFromHistory = (id: string) => {
+  const deleteFromHistory = (id) => {
     const newHistory = history.filter(item => item.id !== id);
     setHistory(newHistory);
     localStorage.setItem("thumbnail_history", JSON.stringify(newHistory));
